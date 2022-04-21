@@ -1,5 +1,5 @@
-B;e;s;t; ;p;a;r;a;m;e;t;e;r;s; ;a;c;c;o;r;d;i;n;g; ;t;o; ;g;r;i;d; ;s;e;a;r;c;h; ;a;n;d; ;c;r;o;s;s; ;v;a;l;i;d;a;t;i;o;n;:
-max_features;n_estimators
+Mean_absolute_error: ;71630.01570491215
+Mean_squared_error: ;19346040752.398438
 Prediction;Actual result
 377690.75;365000.0
 856586.0;865000.0
