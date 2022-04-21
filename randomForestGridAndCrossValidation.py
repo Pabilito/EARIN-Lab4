@@ -1,13 +1,12 @@
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 import timeit
 import csv
 import datetime
 
 intForRandomState = 42              #Variable to manuipulate the simulation
-trees = 100                         #Number of trees in the forest
 tSize = 0.25                        #Testing set is 25%, training set is 75% of dataset 
 
 #To display the whole table in console
@@ -38,7 +37,19 @@ metrics = np.array(dataset)
 train_metrics, test_metrics, train_toPredict, test_toPredict = train_test_split(metrics, toPredict, test_size = tSize, random_state = intForRandomState)
     
 # Instantiate model n decision trees
-rf = RandomForestRegressor(n_estimators = trees, random_state = intForRandomState)
+rf = RandomForestRegressor(random_state = intForRandomState)
+
+#Grid search parameters
+parameters_grid = {
+   'n_estimators': [100, 200, 500, 1000],                           #Number of trees
+   'max_features': ['auto', 'sqrt', 'log2'],                        #Feature selection
+   'max_depth' : [3,4,5,6,7,8,9],                                   #Depth of the tree
+   'criterion' :['absolute_error', 'squared_error', 'poisson']      #Mean absolute error or mean squre error
+}
+
+#We also add cross validation
+GSCV = GridSearchCV(estimator=rf, param_grid=parameters_grid, cv=5)  
+GSCV.fit(train_metrics, train_toPredict)
 
 start = timeit.default_timer()
 # Train the model 
@@ -56,9 +67,11 @@ np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
 #Save results to csv file
 #WARNING - Relative path on my system
-filename = "TestResults/Random forest results.csv"
+filename = "TestResults/Random forest results with grid search and cross validation.csv"
 with open(filename,"w+") as my_csv:
     csvWriter = csv.writer(my_csv,delimiter=';')
+    csvWriter.writerow("Best parameters according to grid search and cross validation:") 
+    csvWriter.writerow(GSCV.best_params_) 
     csvWriter.writerow(["Prediction","Actual result"])
     for entry in range (0, len(predictions)):
         csvWriter.writerow([predictions[entry], test_toPredict[entry]])
