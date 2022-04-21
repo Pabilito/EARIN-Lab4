@@ -7,7 +7,7 @@ import csv
 import datetime
 
 intForRandomState = 42              #Variable to manuipulate the simulation
-trees = 100                         #Number of trees in the forest
+trees = 10                          #Number of trees in the forest
 tSize = 0.25                        #Testing set is 25%, training set is 75% of dataset 
 
 #To display the whole table in console
@@ -25,7 +25,7 @@ toPredict = np.array(dataset['price'])
 dataset = dataset.drop('price', axis = 1)
 
 # Convert date to know how old houses are in years
-thisYear = datetime.datetime.now()
+thisYear = datetime.datetime.now().year
 dataset['date'] = thisYear - pd.to_datetime(dataset["date"]).dt.year
 
 #Store column labels
@@ -56,7 +56,9 @@ np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 
 #Save results to csv file
 #WARNING - Relative path on my system
-filename = "TestResults/Random forest results"
+filename = "TestResults/Random forest results.csv"
 with open(filename,"w+") as my_csv:
     csvWriter = csv.writer(my_csv,delimiter=';')
-    csvWriter.writerows("test")
+    csvWriter.writerow(["Prediction","Actual result"])
+    for entry in range (0, len(predictions)):
+        csvWriter.writerow([predictions[entry], test_toPredict[entry]])
