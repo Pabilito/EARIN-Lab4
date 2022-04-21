@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 import timeit
 import csv
 import datetime
@@ -42,7 +43,7 @@ rf = RandomForestRegressor(random_state = intForRandomState)
 #Grid search parameters
 start = timeit.default_timer()
 parameters_grid = {
-    'n_estimators': [100, 200, 500, 1000],                           #Number of trees
+    'n_estimators': [100, 250, 500],                                 #Number of trees
     'max_features': ['auto', 'sqrt', 'log2'],                        #Feature selection
     'max_depth' : [3,5,7,9],                                         #Depth of the tree
     'criterion' :['absolute_error', 'squared_error', 'poisson']      #Mean absolute error or mean squre error
@@ -69,6 +70,8 @@ np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 filename = "TestResults/Random forest results with grid search and cross validation.csv"
 with open(filename,"w+") as my_csv:
     csvWriter = csv.writer(my_csv,delimiter=';')
+    csvWriter.writerow(['Mean_absolute_error: ', mean_absolute_error(test_toPredict, predictions)])
+    csvWriter.writerow(['Mean_squared_error: ', mean_squared_error(test_toPredict, predictions)])
     csvWriter.writerow(["Prediction","Actual result"])
     for entry in range (0, len(predictions)):
         csvWriter.writerow([predictions[entry], test_toPredict[entry]])

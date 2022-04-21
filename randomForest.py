@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot  as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_absolute_error, mean_squared_error
 import timeit
 import csv
 import datetime
@@ -36,7 +38,7 @@ metrics = np.array(dataset)
 
 #Divide dataset into training and testing set, we can change random_state to change the shuffling of the data
 train_metrics, test_metrics, train_toPredict, test_toPredict = train_test_split(metrics, toPredict, test_size = tSize, random_state = intForRandomState)
-    
+
 # Instantiate model n decision trees
 rf = RandomForestRegressor(n_estimators = trees, random_state = intForRandomState)
 
@@ -59,6 +61,19 @@ np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
 filename = "TestResults/Random forest results.csv"
 with open(filename,"w+") as my_csv:
     csvWriter = csv.writer(my_csv,delimiter=';')
+    csvWriter.writerow(['Mean_absolute_error: ', mean_absolute_error(test_toPredict, predictions)])
+    csvWriter.writerow(['Mean_squared_error: ', mean_squared_error(test_toPredict, predictions)])
     csvWriter.writerow(["Prediction","Actual result"])
     for entry in range (0, len(predictions)):
         csvWriter.writerow([predictions[entry], test_toPredict[entry]])
+
+#Graph1 - Price vs Sqft_living 
+size = test_metrics[:,4]
+plt.scatter(size, test_toPredict, color = 'red', s=0.1)
+plt.scatter(size, predictions, color = 'green', s=0.1)
+plt.title('Random Forest Regression')
+plt.xlabel('Sqft_living')
+plt.ylabel('Price')
+plt.legend(['Original value', 'Prediction'])
+plt.show()
+plt.savefig('./TestResults/PriceVsHouseSize.png')
