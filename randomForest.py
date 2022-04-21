@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot  as plt
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
@@ -76,4 +76,12 @@ plt.xlabel('Sqft_living')
 plt.ylabel('Price')
 plt.legend(['Original value', 'Prediction'])
 plt.show()
-plt.savefig('./TestResults/PriceVsHouseSize.png')
+
+#Graph2 - Price vs Sqft_living, less data 
+plt.scatter(size[0:50], test_toPredict[0:50], color = 'red', s=2)
+plt.scatter(size[0:50], predictions[0:50], color = 'green', s=2)
+plt.title('Random Forest Regression')
+plt.xlabel('Sqft_living')
+plt.ylabel('Price')
+plt.legend(['Original value', 'Prediction'])
+plt.show()

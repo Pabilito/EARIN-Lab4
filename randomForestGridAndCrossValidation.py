@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+import matplotlib.pyplot as plt
 import timeit
 import csv
 import datetime
@@ -43,11 +44,10 @@ rf = RandomForestRegressor(random_state = intForRandomState)
 #Grid search parameters
 start = timeit.default_timer()
 parameters_grid = {
-    'n_estimators': [100, 250, 500],                                 #Number of trees
-    'max_features': ['auto', 'sqrt', 'log2'],                        #Feature selection
-    'max_depth' : [3,5,7,9],                                         #Depth of the tree
-    'criterion' :['absolute_error', 'squared_error', 'poisson']      #Mean absolute error or mean squre error
-}
+    'n_estimators': [100, 200],                                      #Number of trees
+    'max_features': ['auto', 'sqrt'],                                #Feature selection
+    'criterion' :['absolute_error', 'squared_error']                 #Mean absolute error or mean squre error
+} #Should be much more, but it will take too much time
 
 #We also add cross validation 5 times
 GSCV = GridSearchCV(estimator=rf, param_grid=parameters_grid, cv=5)
@@ -75,3 +75,22 @@ with open(filename,"w+") as my_csv:
     csvWriter.writerow(["Prediction","Actual result"])
     for entry in range (0, len(predictions)):
         csvWriter.writerow([predictions[entry], test_toPredict[entry]])
+
+#Graph1 - Price vs Sqft_living 
+size = test_metrics[:,4]
+plt.scatter(size, test_toPredict, color = 'red', s=0.1)
+plt.scatter(size, predictions, color = 'green', s=0.1)
+plt.title('Random Forest Regression')
+plt.xlabel('Sqft_living')
+plt.ylabel('Price')
+plt.legend(['Original value', 'Prediction'])
+plt.show()
+
+#Graph2 - Price vs Sqft_living, less data 
+plt.scatter(size[0:50], test_toPredict[0:50], color = 'red', s=2)
+plt.scatter(size[0:50], predictions[0:50], color = 'green', s=2)
+plt.title('Random Forest Regression')
+plt.xlabel('Sqft_living')
+plt.ylabel('Price')
+plt.legend(['Original value', 'Prediction'])
+plt.show()
