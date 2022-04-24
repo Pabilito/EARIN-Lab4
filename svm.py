@@ -39,20 +39,29 @@ metrics = np.array(dataset)
 #Divide dataset into training and testing set, we can change random_state to change the shuffling of the data
 train_metrics, test_metrics, train_toPredict, test_toPredict = train_test_split(metrics, toPredict, test_size = tSize, random_state = intForRandomState)
 
-X = train_metrics
-X_test_norm = test_metrics
 
+#data preprocessing - scaling
 scaler = StandardScaler().fit(train_metrics)
 X = scaler.transform(train_metrics)
 X_test_norm = scaler.transform(test_metrics)
 '''
+#no scaling
+X = train_metrics
+X_test_norm = test_metrics
+'''
+'''
+#data prepocessing normalization
 norm = MinMaxScaler().fit(train_metrics)
 X = norm.transform(train_metrics)
 X_test_norm = norm.transform(test_metrics)
 '''
 Y = train_toPredict
+
+#Instantiate model of linear SVR
 regr = LinearSVR(max_iter=2000, C=100)
+
 start = timeit.default_timer()
+# Train the model 
 regr.fit(X, Y)
 stop = timeit.default_timer()
 training_time = "{0:0.3f}".format(stop - start)
